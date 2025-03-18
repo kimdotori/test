@@ -1,0 +1,391 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html lang="ko">
+<head>
+<meta http-equiv="Content-Style-Type" content="text/css">
+<meta http-equiv="Content-Script-Type" content="text/javascript">
+<title>TOMORROW X TOGETHER 노래 소트</title>
+<script type="text/javascript">
+<!--
+
+var namMember = new Array(
+
+"<br>Blue Orangeade</br>",
+"<br>어느날 머리에서 뿔이 자랐다 (CROWN)</br>",
+"<br>Our Summer</br>",
+"<br>Cat & Dog</br>",
+"<br>별의 낮잠</br>",
+"<br>New Rules</br>",
+"<br>9와 4분의 3 승강장에서 너를 기다려 (Run Away)</br>",
+"<br>간지러워 (Roller Coaster)</br>",
+"<br>Poppin' Star</br>",
+"<br>그냥 괴물을 살려두면 안 되는 걸까</br>",
+"<br>Magic Island</br>",
+"<br>20cm</br>",
+"<br>Angel Or Devil</br>",
+"<br>Drama</br>",
+"<br>세계가 불타버린 밤, 우린... (Can't You See Me?)</br>",
+"<br>샴푸의 요정</br>",
+"<br>거울 속의 미로</br>",
+"<br>동물원을 빠져나온 퓨마</br>",
+"<br>Eternally</br>",
+"<br>; (땀)</br>",
+"<br>Ghosting</br>",
+"<br>5시 53분의 하늘에서 발견한 너와 나</br>",
+"<br>날씨를 잃어버렸어</br>",
+"<br>Whishlist</br>",
+"<br>하굣길</br>",
+"<br>Your Light</br>",
+"<br>永遠に光れ (Everlasting Shine)</br>",
+"<br>Force</br>",
+"<br>널 보면 시간이 멈춰 어느 순간에도</br>",
+"<br>Anti-Romantic</br>",
+"<br>0X1=LOVESONG (I Know I Love You)</br>",
+"<br>Magic</br>",
+"<br>소악행</br>",
+"<br>밸런스 게임</br>",
+"<br>No Rules</br>",
+"<br>디어 스푸트니크</br>",
+"<br>Frost</br>",
+"<br>LO$ER=LO♡ER</br>",
+"<br>교환일기 (두밧두 와리와리)</br>",
+"<br>EYES (감은 눈을 떠봐)</br>",
+"<br>Ito</br>",
+"<br>PS5</br>",
+"<br>Opening Sequence</br>",
+"<br>Good Boy Gone Bad</br>",
+"<br>Trust Fund Baby</br>",
+"<br>Lonely Boy(네 번째 손가락 위 타투)</br>",
+"<br>Thursday's Child Has Far To Go</br>",
+"<br>Valley of Lies</br>",
+"<br>Ring</br>",
+"<br>ひとりの夜 (Hitori no Yoru)</br>",
+"<br>Free Falling</br>",
+"<br>Devil by the Window</br>",
+"<br>Sugar Rush Ride</br>",
+"<br>Happy Fools</br>",
+"<br>Tinnitus (돌멩이가 되고 싶어)</br>",
+"<br>네버랜드를 떠나며</br>",
+"<br>이젠 안녕</br>",
+"<br>紫陽花のような恋 (Hydrangea Love)</br>",
+"<br>Do It Like That</br>",
+"<br>Back For More</br>",
+"<br>Growing Pain</br>",
+"<br>Chasing That Feeling</br>",
+"<br>Dreamer</br>",
+"<br>Deep Down</br>",
+"<br>Happily Ever After</br>",
+"<br>물수제비</br>",
+"<br>Blue Spring</br>",
+"<br>내일에서 기다릴게 (I'll See You There Tomorrow)</br>",
+"<br>Deja Vu</br>",
+"<br>Miracle (기적은 너와 내가 함께하는 순간마다 일어나고 있어)</br>",
+"<br>The Killa (I Belong to You)</br>",
+"<br>Quarter Life</br>",
+"<br>ひとつの誓い (We'll Never Change)</br>",
+"<br>きっとずっと (Kitto Zutto)</br>",
+"<br>Open Always Wins</br>",
+"<br>Heaven</br>",
+"<br>Over The Moon</br>",
+"<br>Danger</br>",
+"<br>Resist (Not Gonna Run Away)</br>",
+"<br>Forty One Winks</br>",
+"<br>Higher Than Heaven</br>",
+"<br>Love Story</br>",
+"<br>Can't Stop</br>",
+"<br>Surfing in the Moonlight</br>",
+
+);
+//*********************************************************
+
+var lstMember = new Array();
+var parent = new Array();
+var equal = new Array();
+var rec = new Array();
+var cmp1,cmp2;
+var head1,head2;
+var nrec;
+
+var numQuestion;
+var totalSize;
+var finishSize;
+var finishFlag;
+
+function initList(){
+var n = 0;
+var mid;
+var i;
+
+lstMember[n] = new Array();
+for (i=0; i<namMember.length; i++) {
+lstMember[n][i] = i;
+}
+parent[n] = -1;
+totalSize = 0;
+n++;
+
+for (i=0; i<lstMember.length; i++) {
+
+if(lstMember[i].length>=2) {
+mid = Math.ceil(lstMember[i].length/2);
+lstMember[n] = new Array();
+lstMember[n] = lstMember[i].slice(0,mid);
+totalSize += lstMember[n].length;
+parent[n] = i;
+n++;
+lstMember[n] = new Array();
+lstMember[n] = lstMember[i].slice(mid,lstMember[i].length);
+totalSize += lstMember[n].length;
+parent[n] = i;
+n++;
+}
+}
+
+for (i=0; i<namMember.length; i++) {
+rec[i] = 0;
+}
+nrec = 0;
+
+for (i=0; i<=namMember.length; i++) {
+equal[i] = -1;
+}
+
+cmp1 = lstMember.length-2;
+cmp2 = lstMember.length-1;
+head1 = 0;
+head2 = 0;
+numQuestion = 1;
+finishSize = 0;
+finishFlag = 0;
+}
+
+function sortList(flag){
+var i;
+var str;
+
+if (flag<0) {
+rec[nrec] = lstMember[cmp1][head1];
+head1++;
+nrec++;
+finishSize++;
+while (equal[rec[nrec-1]]!=-1) {
+rec[nrec] = lstMember[cmp1][head1];
+head1++;
+nrec++;
+finishSize++;
+}
+}
+else if (flag>0) {
+rec[nrec] = lstMember[cmp2][head2];
+head2++;
+nrec++;
+finishSize++;
+while (equal[rec[nrec-1]]!=-1) {
+rec[nrec] = lstMember[cmp2][head2];
+head2++;
+nrec++;
+finishSize++;
+}
+}
+else {
+rec[nrec] = lstMember[cmp1][head1];
+head1++;
+nrec++;
+finishSize++;
+while (equal[rec[nrec-1]]!=-1) {
+rec[nrec] = lstMember[cmp1][head1];
+head1++;
+nrec++;
+finishSize++;
+}
+equal[rec[nrec-1]] = lstMember[cmp2][head2];
+rec[nrec] = lstMember[cmp2][head2];
+head2++;
+nrec++;
+finishSize++;
+while (equal[rec[nrec-1]]!=-1) {
+rec[nrec] = lstMember[cmp2][head2];
+head2++;
+nrec++;
+finishSize++;
+}
+}
+
+if (head1<lstMember[cmp1].length && head2==lstMember[cmp2].length) {
+
+while (head1<lstMember[cmp1].length){
+rec[nrec] = lstMember[cmp1][head1];
+head1++;
+nrec++;
+finishSize++;
+}
+}
+else if (head1==lstMember[cmp1].length && head2<lstMember[cmp2].length) {
+//リストcmp1が走査済 - リストcmp2の残りをコピ?
+while (head2<lstMember[cmp2].length){
+rec[nrec] = lstMember[cmp2][head2];
+head2++;
+nrec++;
+finishSize++;
+}
+}
+
+if (head1==lstMember[cmp1].length && head2==lstMember[cmp2].length) {
+for (i=0; i<lstMember[cmp1].length+lstMember[cmp2].length; i++) {
+lstMember[parent[cmp1]][i] = rec[i];
+}
+lstMember.pop();
+lstMember.pop();
+cmp1 = cmp1-2;
+cmp2 = cmp2-2;
+head1 = 0;
+head2 = 0;
+
+if (head1==0 && head2==0) {
+for (i=0; i<namMember.length; i++) {
+rec[i] = 0;
+}
+nrec = 0;
+}
+}
+
+if (cmp1<0) {
+str = "Battle No."+(numQuestion-1)+"<br>"+Math.floor(finishSize*100/totalSize)+"% sorted.";
+document.getElementById("battleNumber").innerHTML = str;
+
+showResult();
+finishFlag = 1;
+}
+else {
+showImage();
+}
+}
+
+
+function showResult() {
+var ranking = 1;
+var sameRank = 1;
+var str = "";
+var i;
+
+str += "<table style=\"width:200px; font-size:12px; line-height:120%; margin-left:auto; margin-right:auto; border:1px solid #000; border-collapse:collapse\" align=\"center\">";
+str += "<tr><td style=\"color:#ffffff; background-color:#000; text-align:center;\">순위<\/td><td style=\"color:#ffffff; background-color:#000; text-align:center;\">이름<\/td><\/tr>";
+
+for (i=0; i<namMember.length; i++) {
+str += "<tr><td style=\"border:1px solid #000; text-align:right; padding-right:5px;\">"+ranking+"<\/td><td style=\"border:1px solid #000; padding-left:5px;\">"+namMember[lstMember[0][i]]+"<\/td><\/tr>";
+if (i<namMember.length-1) {
+if (equal[lstMember[0][i]]==lstMember[0][i+1]) {
+sameRank++;
+} else {
+ranking += sameRank;
+sameRank = 1;
+}
+}
+}
+str += "<\/table>";
+
+document.getElementById("resultField").innerHTML = str;
+}
+
+function showImage() {
+var str0 = "Battle No."+numQuestion+"<br>"+Math.floor(finishSize*100/totalSize)+"% sorted.";
+var str1 = ""+toNameFace(lstMember[cmp1][head1]);
+var str2 = ""+toNameFace(lstMember[cmp2][head2]);
+
+document.getElementById("battleNumber").innerHTML = str0;
+document.getElementById("leftField").innerHTML = str1;
+document.getElementById("rightField").innerHTML = str2;
+
+numQuestion++;
+}
+
+//数値を名前（顔文字）に変換+++++++++++++++++++++++++++++++
+function toNameFace(n){
+var str = namMember[n];
+
+/*
+str += "<br>────<br>";
+switch(n) {
+case -1: str+="（ ´∀｀）";break;
+default: str+=""+n;
+}
+*/
+return str;
+}
+//-->
+</script>
+<style type="text/css">
+<!--
+
+#mainTable{
+font-size: 12px;
+font-family: '돋움',sans-serif;
+text-align: center;
+vertical-align: middle;
+width: 410px;
+margin-left: auto;
+margin-right: auto;
+border-collapse: separate;
+border-spacing: 10px 5px;
+}
+#leftField{
+width: 120px;
+height: 150px;
+border: 1px solid #000;
+}
+#rightField{
+width: 120px;
+height: 150px;
+border: 1px solid #000;
+}
+.middleField{
+width: 120px;
+height: 70px;
+border: 1px solid #000;
+}
+//-->
+<!--
+A{
+  text-decoration : none;
+}
+-->
+<!--
+a:hover{color:#99ccff;}
+-->
+</style>
+<meta name="generator" content="Namo WebEditor(Trial)">
+<meta http-equiv="content-type" content="text/html; charset=utf-8"></head>
+
+<body text="#00000" bgcolor="#fffff" link="#0099ff" vlink="#0099ff" alink="#0099ff">
+<table id="mainTable" align="center">
+<tr>
+        <td id="battleNumber" colspan="3" style="padding-bottom: 10px;">
+            <p>&nbsp;</p>
+        </td>
+</tr>
+<tr>
+<td id="leftField" onClick="if(finishFlag==0)sortList(-1);" rowspan="2">
+&nbsp;
+</td>
+
+</td>
+<td id="rightField" onClick="if(finishFlag==0)sortList(1);" rowspan="2">
+</td>
+</tr>
+<tr>
+</td>
+</tr>
+</table><br><br>
+<div id="resultField" style="text-align:center;">
+    <p><font size="2" face="돋움"><span style="">TOMORROW X TOGETHER 노래 소트</font></p>
+    <p><font size="2" face="돋움">~2025.03</font></p>
+
+</div>
+<script type="text/javascript">
+<!--
+initList();
+showImage();
+//-->
+</script>
+
+</body>
+</html>
